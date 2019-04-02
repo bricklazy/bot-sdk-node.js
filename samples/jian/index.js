@@ -42,7 +42,7 @@ const datas = [
     {'des': '小章鱼', 'pic': 'http://dbp-resource.gz.bcebos.com/217dd919-cd4f-3942-3594-11d05b9f5d1e/zhangyu.png?authorization=bce-auth-v1%2Fa4d81bbd930c41e6857b989362415714%2F2019-01-14T03%3A30%3A38Z%2F-1%2F%2F07f21dabf5b3b37b27b6e8af13a41de3dcd5f6b4d69cdfca4f404c7eec22dbd7'}
 ];
 
-class InquiryBot extends Bot {
+class JianBot extends Bot {
     constructor(postData) {
         super(postData);
         this.addLaunchHandler(() => {
@@ -51,10 +51,10 @@ class InquiryBot extends Bot {
              let factIndex = Math.floor(Math.random() * factArr.length);
              let randomFact = factArr[factIndex];
              let card = new Bot.Card.TextCard(randomFact);*/
-
             let speechOutput = '欢迎使用简笔画。';
             let renderTemplate = new RenderTemplate;
             let list = new List1();
+            list.setBackGroundImage()
             datas.forEach(function (data) {
                 let item = new Item();
                 item.setPlainPrimaryText(data["des"]);
@@ -149,7 +149,7 @@ class InquiryBot extends Bot {
 
 exports.handler = function (event, context, callback) {
     try {
-        let b = new InquiryBot(event);
+        let b = new JianBot(event);
         // 0: debug  1: online
         b.botMonitor.setEnvironmentInfo(privateKey, 0);
         b.run().then(function (result) {
