@@ -54,7 +54,7 @@ class JianBot extends Bot {
             let speechOutput = '欢迎使用简笔画。';
             let renderTemplate = new RenderTemplate;
             let list = new List1();
-            list.setBackGroundImage()
+            list.setBackGroundImage('http://dbp-resource.gz.bcebos.com/4f2a4119-ebe2-1d85-8cb1-63c9ab94e88c/b8bffcfcf7c7f3c042b60c87b6beabb5.jpg?authorization=bce-auth-v1%2Fa4d81bbd930c41e6857b989362415714%2F2019-04-02T12%3A14%3A52Z%2F-1%2F%2F24d8f7836a5e4aead676ee8bf52255040b4810b9db48d9de83ce04b9c5947e39')
             datas.forEach(function (data) {
                 let item = new Item();
                 item.setPlainPrimaryText(data["des"]);
