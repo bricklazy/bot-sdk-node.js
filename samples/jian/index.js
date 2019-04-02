@@ -68,6 +68,32 @@ class JianBot extends Bot {
             };
         });
 
+        this.addIntentHandler('help',  ()=>{
+            this.waitAnswer();
+            let card = new Bot.Card.TextCard("帮助");
+            return {
+                card: card
+            };
+        });
+
+        this.addIntentHandler('back',  ()=>{
+            this.waitAnswer();
+            this.setSessionAttribute("index", 0, 0);
+            let renderTemplate = new RenderTemplate;
+            let list = new List1();
+            list.setBackGroundImage('http://dbp-resource.gz.bcebos.com/4f2a4119-ebe2-1d85-8cb1-63c9ab94e88c/b8bffcfcf7c7f3c042b60c87b6beabb5.jpg?authorization=bce-auth-v1%2Fa4d81bbd930c41e6857b989362415714%2F2019-04-02T12%3A14%3A52Z%2F-1%2F%2F24d8f7836a5e4aead676ee8bf52255040b4810b9db48d9de83ce04b9c5947e39')
+            datas.forEach(function (data) {
+                let item = new Item();
+                item.setPlainPrimaryText(data["des"]);
+                item.setImage(data["pic"]);
+                list.addItem(item);
+            });
+            renderTemplate.setTemplate(list);
+            return {
+                directives: [renderTemplate]
+            };
+        });
+
         this.addIntentHandler('next', () => {
             this.waitAnswer();
             let index = this.getSessionAttribute("index", 0) + 1;
@@ -136,7 +162,7 @@ class JianBot extends Bot {
                 card: card,
                 outputSpeech: speechOutput
             };
-        })
+        });
 
         this.addSessionEndedHandler(() => {
             this.endSession();
