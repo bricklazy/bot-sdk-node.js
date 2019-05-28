@@ -23,16 +23,16 @@ const Hint = Bot.Directive.Display.Hint;
 
 /*列表显示提示信息*/
 const hintJian = [
-    '对我说小度小度选择第几个',
-    '对我说小度小度帮助'
+    '对我说选择第几个',
+    '对我说帮助'
 ];
 
 /*图画界面显示信息*/
 const cueWords = [
-    '对我说小度小度下一个',
-    '对我说小度小度上一个',
-    '对我说小度小度返回',
-    '对我说小度小度帮助'
+    '对我说下一个',
+    '对我说上一个',
+    '对我说返回',
+    '对我说帮助'
 ];
 
 /*简笔画列表*/
@@ -74,6 +74,11 @@ class JianBot extends Bot {
          * 返回
          */
         this.addIntentHandler('back',  this.back);
+
+        /**
+         * 开始
+         */
+        this.addIntentHandler('start', this.selectDef);
 
         /**
          * 下一个
@@ -122,7 +127,7 @@ class JianBot extends Bot {
 
     launchJian(){
         this.waitAnswer();
-        let speechOutput = '欢迎使用画图，请试着说选择第一个';
+        let speechOutput = '欢迎使用简笔画，请试着说选择第一个';
         let reprompt = `没有听懂，可以直接对我想要使用的服务，例如 第一个`;
         let renderTemplate = this.getListTemplate();
         let hint = new Hint(hintJian);
@@ -135,9 +140,8 @@ class JianBot extends Bot {
 
     help(){
         this.waitAnswer();
-        let help = "\t帮助信息\n列表选择:对我说小度小度选择第x个。\n上一个：对我说小度小度上一个。\n下一个：对我说小度小度下一个。\n返回：对我小度小度返回。";
+        let help = "\t帮助信息\n列表选择:对我说选择第几个。\n上一个：对我说上一个。\n下一个：对我说下一个。\n返回：对我返回。";
         let card = new Bot.Card.TextCard(help);
-        card.setToken('help');
         return {
             card: card
         };
@@ -188,6 +192,22 @@ class JianBot extends Bot {
 
         this.setSessionAttribute("index", index, 0);
 
+        let factArr = datas;
+        let speechOutput = factArr[index]["des"];
+        let src = factArr[index]["pic"];
+        let card = new Bot.Card.ImageCard();
+        card.addCueWords(cueWords)
+        card.addItem(src);
+
+        return {
+            card: card,
+            outputSpeech: speechOutput
+        };
+    }
+
+    selectDef(){
+        this.waitAnswer();
+        let index = this.getSessionAttribute("index", 0) ;
         let factArr = datas;
         let speechOutput = factArr[index]["des"];
         let src = factArr[index]["pic"];
@@ -258,7 +278,8 @@ class JianBot extends Bot {
         list.setBackGroundImage('http://dbp-resource.gz.bcebos.com/4f2a4119-ebe2-1d85-8cb1-63c9ab94e88c/b8bffcfcf7c7f3c042b60c87b6beabb5.jpg?authorization=bce-auth-v1%2Fa4d81bbd930c41e6857b989362415714%2F2019-04-02T12%3A14%3A52Z%2F-1%2F%2F24d8f7836a5e4aead676ee8bf52255040b4810b9db48d9de83ce04b9c5947e39')
         datas.forEach(function (data) {
             let item = new Item();
-            item.setToken(data['pos']);
+            /*token一定为字符串否则自动生成，不能正常使用token*/
+            item.setToken(String(data['pos']));
             item.setPlainPrimaryText(data['des']);
             item.setImage(data['pic']);
             list.addItem(item);
@@ -278,7 +299,12 @@ class JianBot extends Bot {
         let token = data.request.token ? data.request.token : '';
         if (!token) {
             this.setExpectSpeech(false);
-            return;
+          /*  let card = new Bot.Card.TextCard('!token'+String(data));
+            return {
+                card: card,
+                outputSpeech: 'token空'
+            };*/
+          return ;
         }
 
         if(this.isInteger(token)){
@@ -288,6 +314,10 @@ class JianBot extends Bot {
                 };
             }
             let index = token;
+
+            if(index>0){
+                index = index - 1;
+            }
 
             this.setSessionAttribute("index", index, 0);
             let factArr = datas;
@@ -299,6 +329,12 @@ class JianBot extends Bot {
             return {
                 card: card,
                 outputSpeech: speechOutput
+            };
+        }else{
+            let card = new Bot.Card.TextCard('出错了'+String(data));
+            return {
+                card: card,
+                outputSpeech: '出错了'
             };
         }
 
